@@ -1,4 +1,4 @@
-### Insurance Claim Prediction Machine Learning Project
+# Insurance Claim Prediction Machine Learning Project
 
 ## Objectives
 The primary aim of this project is to develop a data-driven approach for detecting potentially fraudulent insurance claims. 
@@ -9,23 +9,23 @@ The core objectives are:
 - Apply the full data science workflow — from data understanding and preprocessing to feature engineering and model evaluation.
 
 ## Repository Structure
- # data_exploration.ipynb:
+ ### data_exploration.ipynb:
   It contains the Data exploration, visualization and pre-processing part of the project, 
   which results will be used for the modelling part
- # Modelling.ipynb:
+ ### Modelling.ipynb:
   The implementation and the performance evaluation of differents Machine Learning models is done in this notebook.
- # requirements.txt:
+ ### requirements.txt:
   List of required librairries for this project
- # README.md:
+ ### README.md:
   Description of the project and the repository structure
- # ToKeep folder:
+ ### ToKeep folder:
   Contains older versions of the differents notebooks, not to be considered 
- # insurance_claims.csv:
+ ### insurance_claims.csv:
   Insurance claims data set from https://data.mendeley.com/datasets/992mh7dk9y/2
   
 ## Installation Instructions
   Install all libraries from the 'requirements.txt' in a virtual environment to run the notebooks
-  
+ 
 ## Summary of models performance
 
 
