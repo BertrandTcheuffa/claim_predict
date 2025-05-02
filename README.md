@@ -22,7 +22,7 @@ The core objectives are:
   Folder of older versions of the differents notebooks.
  ### insurance_claims.csv:
   Insurance claims data set from https://data.mendeley.com/datasets/992mh7dk9y/2
- ### images folder: 
+ ### images: 
   Image folder
   
 ## Installation Instructions
