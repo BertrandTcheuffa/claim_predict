@@ -1,6 +1,32 @@
-# claim_predict
-We can use this repo for the first steps in the project
-It contains:
-- the "requirements_bt.txt" file of the virtual environment that works well on my machine
-- the "insurance_claims.csv" file
-- The "claim_pred" jupyter notebook  with the first analysis of the data set
+### Insurance Claim Prediction Machine Learning Project
+
+## Objectives
+The primary aim of this project is to develop a data-driven approach for detecting potentially fraudulent insurance claims. 
+Beyond simply building a functional model, the focus lies in ensuring quality, stability, and real-world applicability. 
+The core objectives are:
+- Build accurate machine learning models capable of identifying fraudulent claims based on structured insurance data.
+- Ensure model stability and reliability by achieving consistently high prediction scores across different subsets and unseen data.
+- Apply the full data science workflow — from data understanding and preprocessing to feature engineering and model evaluation.
+
+## Repository Structure
+ # data_exploration.ipynb:
+  It contains the Data exploration, visualization and pre-processing part of the project, 
+  which results will be used for the modelling part
+ # Modelling.ipynb:
+  The implementation and the performance evaluation of differents Machine Learning models is done in this notebook.
+ # requirements.txt:
+  List of required librairries for this project
+ # README.md:
+  Description of the project and the repository structure
+ # ToKeep folder:
+  Contains older versions of the differents notebooks, not to be considered 
+ # insurance_claims.csv:
+  Insurance claims data set from https://data.mendeley.com/datasets/992mh7dk9y/2
+  
+## Installation Instructions
+  Install all libraries from the 'requirements.txt' in a virtual environment to run the notebooks
+  
+## Summary of models performance
+
+
+
