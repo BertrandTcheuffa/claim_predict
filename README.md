@@ -11,17 +11,19 @@ The core objectives are:
 ## Repository Structure
  ### data_exploration.ipynb:
   It contains the Data exploration, visualization and pre-processing part of the project, 
-  which results will be used for the modelling part
+  which results will serve for the modelling part
  ### Modelling.ipynb:
   The implementation and the performance evaluation of differents Machine Learning models is done in this notebook.
  ### requirements.txt:
-  List of required librairries for this project
+  List of required librairies for this project
  ### README.md:
   Description of the project and the repository structure
  ### ToKeep folder:
   Contains older versions of the differents notebooks, not to be considered 
  ### insurance_claims.csv:
   Insurance claims data set from https://data.mendeley.com/datasets/992mh7dk9y/2
+ ### images folder: 
+  Image folder
   
 ## Installation Instructions
   Install all libraries from the 'requirements.txt' in a virtual environment to run the notebooks
