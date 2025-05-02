@@ -18,8 +18,8 @@ The core objectives are:
   List of required librairies for this project
  ### README.md:
   Description of the project and the repository structure
- ### ToKeep folder:
-  Contains older versions of the differents notebooks, not to be considered 
+ ### backup:
+  Folder of older versions of the differents notebooks.
  ### insurance_claims.csv:
   Insurance claims data set from https://data.mendeley.com/datasets/992mh7dk9y/2
  ### images folder: 
