@@ -27,6 +27,6 @@ The core objectives are:
   Install all libraries from the 'requirements.txt' in a virtual environment to run the notebooks
  
 ## Summary of models performance
-![Models performance summary](images/Models performance.png)
+![Models performance summary](/images/Models performance.png)
 
 
