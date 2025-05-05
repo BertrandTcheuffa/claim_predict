@@ -45,7 +45,7 @@ df=pd.read_csv("insurance_claims.csv")
 
 st.title("Insurance Claim Prediction ")
 st.sidebar.title("Table of contents")
-pages=["Business problem", "Data Visualization","Statistical Methods", "Machine Learning", "Future Sample Application"]
+pages=["Business problem", "Data Visualization","Statistical Methods", "Feature Engineering",  "Modelling", "Real-life Sample Application"]
 st.sidebar.write("\n\nCreated by:")
 st.sidebar.write("Bertrand Tcheuffa  \n Nathalie Mugrauer  \n Quy-Manh Jurca-Tsan \n")
 st.sidebar.write("\n\n\n")
