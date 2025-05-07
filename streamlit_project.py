@@ -4,6 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
+from PIL import Image
+from scipy.stats import ttest_ind, ks_2samp, mannwhitneyu
+from scipy.stats import chi2_contingency, chi2
 
 # Set page configuration with wide layout and custom theme
 st.set_page_config(layout="wide")
@@ -63,10 +66,66 @@ page=st.sidebar.radio("", pages, label_visibility="collapsed")  # Hide the defau
 if page == pages[0] : 
     st.header("Business Problem Introduction")
     st.divider()
-    st.markdown("## ❓ To fraud, or not to fraud: that is the question")
-    st.markdown("### 📉 Insurance fraud undermines underwriting profitability, so prompt claim assessment is critical.")
-    st.markdown("### ⚙️ Any suspicion of fraud must be underpinned by robust data analysis and pattern detection before opening an investigation.")
-    st.markdown("### 💵 Efficient and accurate identification of fraudulent cases minimizes investigation costs and prevents unwarranted payouts.")
+    col1, col2 = st.columns([1,8])
+    with col1:
+        img = Image.open("shakespeare.jpg")
+        img_klein = img.resize((200, 200))
+        st.image(img_klein)  
+    with col2:
+        st.markdown("## To fraud, or not to fraud: that is the question")
+        st.markdown("##### 📉 Insurance fraud undermines underwriting profitability, so prompt claim assessment is critical.")
+        st.markdown("##### ⚙️ Any suspicion of fraud must be underpinned by robust data analysis and pattern detection before opening an investigation.")
+        st.markdown("##### 💵 Efficient and accurate identification of fraudulent cases minimizes investigation costs and prevents unwarranted payouts.")
+    
+    st.divider()
+    st.header("Technical KPI Dashboard") 
+    st.divider()
+    col1,col2, col3, col4, col5, col6= st.columns(6)
+  # The above code is creating a dashboard layout using Streamlit in Python. It consists of multiple
+  # columns (`col1` to `col6`) where each column displays different information about a dataset
+  # (`tmp`).
+    with col1:
+        st.markdown(f"""
+        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
+            <h3 style="margin-bottom:5px;">Table</h3>
+            <h1 style="font-size:48px; color:#000000;">{1}</h1>
+        </div>
+    """, unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"""
+        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
+            <h3 style="margin-bottom:5px;">Samples</h3>
+            <h1 style="font-size:48px; color:#000000;">{tmp.shape[0]}</h1>
+        </div>
+    """, unsafe_allow_html=True)
+    with col3:
+        st.markdown(f"""
+        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
+            <h3 style="margin-bottom:5px;">Features</h3>
+            <h1 style="font-size:48px; color:#000000;">{tmp.shape[1]-2}</h1>
+        </div>
+    """, unsafe_allow_html=True)
+    with col4:
+        st.markdown(f"""
+        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
+            <h3 style="margin-bottom:5px;">NaN-Values</h3>
+            <h1 style="font-size:48px; color:#000000;">{tmp.isna().sum().sum()}</h1>
+        </div>
+    """, unsafe_allow_html=True)
+    with col5:
+        st.markdown(f"""
+        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
+            <h3 style="margin-bottom:5px;">Num. Features</h3>
+            <h1 style="font-size:48px; color:#000000;">{len(tmp.select_dtypes(['float64', 'int64']).columns)}</h1>
+        </div>
+    """, unsafe_allow_html=True)
+    with col6:
+        st.markdown(f"""
+        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
+            <h3 style="margin-bottom:5px;">Cat. Features</h3>
+            <h1 style="font-size:48px; color:#000000;">{len(tmp.select_dtypes(['object']).columns)}</h1>
+        </div>
+    """, unsafe_allow_html=True)
 
     st.divider()
     st.header("Economic KPI Dashboard")
@@ -174,59 +233,6 @@ if page == pages[0] :
     st.dataframe(df.head(8))
     
     st.divider()
-    st.header("Technical KPI Dashboard") 
-    st.divider()
-    col1,col2, col3, col4, col5, col6= st.columns(6)
-  # The above code is creating a dashboard layout using Streamlit in Python. It consists of multiple
-  # columns (`col1` to `col6`) where each column displays different information about a dataset
-  # (`tmp`).
-    with col1:
-        st.markdown(f"""
-        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
-            <h3 style="margin-bottom:5px;">Table</h3>
-            <h1 style="font-size:48px; color:#000000;">{1}</h1>
-        </div>
-    """, unsafe_allow_html=True)
-    with col2:
-        st.markdown(f"""
-        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
-            <h3 style="margin-bottom:5px;">Samples</h3>
-            <h1 style="font-size:48px; color:#000000;">{tmp.shape[0]}</h1>
-        </div>
-    """, unsafe_allow_html=True)
-    with col3:
-        st.markdown(f"""
-        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
-            <h3 style="margin-bottom:5px;">Features</h3>
-            <h1 style="font-size:48px; color:#000000;">{tmp.shape[1]-2}</h1>
-        </div>
-    """, unsafe_allow_html=True)
-    with col4:
-        st.markdown(f"""
-        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
-            <h3 style="margin-bottom:5px;">NaN-Values</h3>
-            <h1 style="font-size:48px; color:#000000;">{tmp.isna().sum().sum()}</h1>
-        </div>
-    """, unsafe_allow_html=True)
-    with col5:
-        st.markdown(f"""
-        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
-            <h3 style="margin-bottom:5px;">Num. Features</h3>
-            <h1 style="font-size:48px; color:#000000;">{len(tmp.select_dtypes(['float64', 'int64']).columns)}</h1>
-        </div>
-    """, unsafe_allow_html=True)
-    with col6:
-        st.markdown(f"""
-        <div style="background-color:#FFFFFF; padding:20px; border-radius:10px; text-align:center">
-            <h3 style="margin-bottom:5px;">Cat. Features</h3>
-            <h1 style="font-size:48px; color:#000000;">{len(tmp.select_dtypes(['object']).columns)}</h1>
-        </div>
-    """, unsafe_allow_html=True)
-
-      
-  
-    
-    st.divider()
     st.header("Objective")
     st.divider()
     st.markdown("### ➡️Our target variable, 'fraud_reported', indicates if a claim is fraudulent or not.")
@@ -236,12 +242,12 @@ if page == pages[0] :
     st.markdown("### 🧠🔁📉Build accurate different machine learning models that spots fraudulent insurance claims.")  
     st.markdown("### 🚨🕵️‍♂️🚨Ensure model stability and reliability by achieving consistently prediction scores across different subsets and unseen data.")  
     st.markdown("### ⚡🕵️‍♀️📈Apply the full data science workflow - from understanding and preprocessing to feature engineering and model evaluation.") 
-    st.write(" Considering the relative large dimensionality of our dataset, after carefully exploring the data , we will review each feature and its relevance to the target variable. Based on this, we will select the most relevant features for our model.")
+    #st.write(" Considering the relative large dimensionality of our dataset, after carefully exploring the data , we will review each feature and its relevance to the target variable. Based on this, we will select the most relevant features for our model.")
 #############################################################################################################################################
 #############################################################################################################################################
 
 if page == pages[1] : 
-  st.write("### Data Visualization")
+  st.header("Data Visualization")
   st.markdown("### In this section, we will visualize the data to better understand the relationships between features and the target variable.")
   
   tab1, tab2, tab3, tab4 =st.tabs(["📊 Overview Chart","⚙️ Distribution Categorical", "🧮 Distribution Numerical", "📚 Heatmap"])
@@ -254,11 +260,11 @@ if page == pages[1] :
     with col_text:
         st.header("Observation")
      
-        st.markdown("### - We observe a distribution of gender that is fairly balanced.")
-        st.markdown("### - The 'authorities_contacted' feature shows that most claims are reported to the police.") 
-        st.markdown("### - While the 'incident_severity' feature indicates that most incidents are minor.") 
-        st.markdown("### - We observe our target variable, 'fraud_reported', is imbalanced, with a higher number of non-fraudulent claims.")
-        st.markdown("### - For the hobbies distribution we observe  that the hobbies chess and crossfit are the most common among fraudulent claims.")
+        st.markdown("#### - We observe a distribution of gender that is fairly balanced.")
+        st.markdown("#### - The 'authorities_contacted' feature shows that most claims are reported to the police.") 
+        st.markdown("#### - While the 'incident_severity' feature indicates that most incidents are minor.") 
+        st.markdown("#### - We observe our target variable, 'fraud_reported', is imbalanced, with a higher number of non-fraudulent claims.")
+        st.markdown("#### - For the hobbies distribution we observe  that the hobbies chess and crossfit are the most common among fraudulent claims.")
         
   with tab2:
     col_img2, col_text2 = st.columns([2, 1])  
@@ -268,9 +274,9 @@ if page == pages[1] :
     with col_text2:
         st.header("Observation")
         
-        st.markdown("### - Approximately 9.1% of the NaN-values in the column ”authorities_contacted” needed to be handled.")
-        st.markdown("### - In addition to missing values, we also encountered placeholder values represented as ❔ in three columns.") 
-        st.markdown("### - ”police_report_available”, ”property_damage”, ”collision_type”") 
+        st.markdown("#### - Approximately 9.1% of the NaN-values in the column ”authorities_contacted” needed to be handled.")
+        st.markdown("#### - In addition to missing values, we also encountered placeholder values represented as ❔ in three columns.") 
+        st.markdown("#### - ”police_report_available”, ”property_damage”, ”collision_type”") 
         
     
   with tab3:
@@ -281,11 +287,9 @@ if page == pages[1] :
     with col_text3:
         st.header("Observation")
         
-        st.markdown("### - We observe a distribution of gender that is fairly balanced.")
-        st.markdown("### - The 'authorities_contacted' feature shows that most claims are reported to the police.") 
-        st.markdown("### - While the 'incident_severity' feature indicates that most incidents are minor.") 
-        st.markdown("### - We observe our target variable, 'fraud_reported', is imbalanced, with a higher number of non-fraudulent claims.")
-        st.markdown("### - For the hobbies distribution we observe  that the hobbies chess and crossfit are the most common among fraudulent claims.")
+        st.markdown("#### - We found that only the feature ”policy_annual_premium” showed approximate normal distributions.")
+        st.markdown("#### - All other numerical features did not follow a normal distribution.")
+
   with tab4:
     col_img4, col_text4 = st.columns([2, 1]) 
     with col_img4:
@@ -294,183 +298,174 @@ if page == pages[1] :
     with col_text4:
         st.header("Observation")
         
-        st.markdown("### - In this visualization, lighter colors indicate strong correlations, while darker shades represent weaker or no correlation.")
-        st.markdown("### - Two distinct clusters of high correlation are clearly visible.") 
-        st.markdown("### - We observe strong correlations between different types of claims—particularly between ”vehicle_claim” and ”total_claim_amount”.") 
-        st.markdown("### - The second cluster, located in the opposite corner of the heatmap, reveals a similarly strong correlation between ”months_as_customer” and ”age”.")
+        st.markdown("#### - In this visualization, dark colors indicate strong correlations, while lighter shades represent weaker or no correlation.")
+        st.markdown("#### - Two distinct clusters of high correlation are clearly visible.") 
+        st.markdown("#### - We observe strong correlations between different types of claims—particularly between ”vehicle_claim” and ”total_claim_amount”.") 
+        st.markdown("#### - The second cluster, located in the opposite corner of the heatmap, reveals a similarly strong correlation between ”months_as_customer” and ”age”.")
 
-  
-# #New blue-green color palette
-#   colors = plt.cm.Blues([0.3, 0.5, 0.7, 0.9])
-#   accent_colors = plt.cm.GnBu([0.4, 0.6, 0.8, 1.0])
-  
-#   # Increase global matplotlib font sizes
-#   plt.rcParams.update({
-#       'font.size': 16,
-#       'axes.titlesize': 20,
-#       'axes.labelsize': 20,
-#       'xtick.labelsize': 17,
-#       'ytick.labelsize': 17,
-#       'legend.fontsize': 17,
-#   })
-  
-#   #Create figure with better size for readability
-#   fig, ax = plt.subplots(2, 3, figsize=(36, 20), dpi=200)
-#   fig.tight_layout(pad=7)  # Increase padding between subplots
+if page == pages[2]:
+    st.header("Data Exploration:")
+    st.markdown("##### Before proceeding with statistical analyses, we should establish a strategy for handling missing (NaN) values. \
+                In addition to missing values, we also encountered placeholder values represented as ”?” in three columns. \
+                This character may either be treated as a missing value and replaced accordingly, or considered as a separate category.\
+                In addition, it is important to examine whether the occurrence of ”?” shows any systematic relationship with fraudulent activity.")
+    
+    tab1, tab2, tab3 = st.tabs(["NaN - authorities_contacted","❔ - police_report_available, property_damage", "❔ - collision_type"])
+    
+    with tab1:
+        st.subheader("NaN - authorities_contacted")
+        col_img, col_text = st.columns([2, 1])
+    with col_img:
+        st.image("meine_figur5.png")
+    with col_text:
+        st.header("Observation")
+     
+        st.markdown("#### - We do not want to remove these values, as they represent almost 10% of the data and our overall dataset is relatively small.")
+        st.markdown("#### - Deleting them could lead to a loss of important information.") 
+        st.markdown("#### - The distribution of fraud and non-fraud cases shows that the missing value is not necessarily an indicator of fraud.") 
+        st.markdown("#### - For example, when looking at the crosstab between ”authorities_contacted” and ”incident_type”, it becomes clear that missing values only appear in cases of ”Parked Car” and ”Vehicle Theft”.")
+        st.markdown("#### - Since ”Police” is also the most frequently occurring category, we decided to use it as a replacement value during encoding.")
+        
+    with tab2:
+        st.subheader("❔ - police_report_available, property_damage")
+        col_img2, col_text2 = st.columns([2, 1])  
+        with col_img2:
+            st.image("meine_figur6.png")
+        with col_text2:
+            st.header("Observation")
+            
+            st.markdown("#### - In ”police_report_available” and ”property_damage”, these ambiguous values may indicate potential fraud, as the information could have been intentionally withheld.")
+            st.markdown("#### - To avoid any misleading interpretations or data leakage, these entries were not imputed with common values from the distribution.") 
+            st.markdown("#### - ”But instead were explicitly replaced with a new category called 'Unknown'.") 
+            
+        
+    with tab3:
+        st.subheader("❔ - collision_type")
+        col_img3, col_text3 = st.columns([2, 1])  
+        with col_img3:
+            st.image("meine_figur7.png")
+        with col_text3:
+            st.header("Observation")
+            
+            st.markdown("#### - The ”?”-values in the ”collision_type” column were observed only in relation to the incident types ”Vehicle Theft” and ”Parked Car”.")
+            st.markdown("#### - Given the context, this can be considered as a separate category.")
+            st.markdown("#### - Therefore, the ”?” entries were replaced with ”No Collision” to accurately reflect the nature of these incidents.")
+    
+    st.divider()
+    st.header("Statistical Methods") 
+    st.markdown("##### Now we want to check how statistically relevant our features are to the target variable. We will use the tests we learned for numerical and categorical features.")
+    
+    tab1, tab2 = st.tabs(["Categorical Features","Numerical Features"])
+    
+    with tab1:    
+        chi2test_results = []
+        for col in df.columns:
+            if df[col].dtype == 'object' and col != "fraud_reported":
+                contingency_table = pd.crosstab(df[col], df['fraud_reported'])
+                chi2, p, dof, expected = chi2_contingency(contingency_table)
+                
+                n = contingency_table.sum().sum()
+                k = min(contingency_table.shape)
+                
+                # Cramér's V
+                cramer_v = np.sqrt(chi2 / (n * (k - 1))) if k > 1 else np.nan
+                
+                chi2test_results.append({
+                    'feature': col,
+                    'chi2': chi2,
+                    'p': p,
+                    'dof': dof,
+                    "cramer_v": cramer_v
+                })
 
-#   # 1. insured sex distribution
-#   ax[0, 0].pie(
-#       df['insured_sex'].value_counts(normalize=True),
-#       labels=['Female', 'Male'],
-#       explode=[0.05, 0],
-#       autopct="%0.2f%%",
-#       colors=["#4682B4", "#1E90FF"],  # Steel blue and dodger blue
-#       textprops={'fontsize': 18, 'fontweight': 'bold'}  # Make pie chart text more readable
-#   )
-#   ax[0, 0].set_title('Distribution Male/Female', fontsize=18, fontweight='bold')
+        chi2test_results = pd.DataFrame(chi2test_results)
+        chi2test_results = chi2test_results.sort_values('p')
+        st.dataframe(chi2test_results)
+    
+    with tab2:
+        results = []
+        df["fraud"]=df['fraud_reported'].apply(lambda x: 1 if str(x)=="Y" else 0)
+        col_quan=df.select_dtypes(['int64', 'float64']).columns
+        for col in col_quan:
+            if col != 'fraud':
+                group0 = df[df['fraud'] == 0][col].dropna()
+                group1 = df[df['fraud'] == 1][col].dropna()
 
-#   # 2. age distribution
-# #   sns.histplot(
-# #       ax=ax[0, 1],
-# #       x="age",
-# #       data=df,
-# #       color="#0077b6",  # Dark blue
-# #       stat="density",
-# #       kde=True
-# #   )
-# #   ax[0, 1].set_title('Distribution of the Age', fontsize=18, fontweight='bold')
-# #   ax[0, 1].spines['right'].set_visible(False)
-# #   ax[0, 1].spines['top'].set_visible(False)
-# #   ax[0, 1].set_xlabel('Age', fontsize=18, fontweight='bold')
-# #   ax[0, 1].set_ylabel('Density', fontsize=18, fontweight='bold')
+                # t-test 
+                t_stat, p_ttest = ttest_ind(group0, group1, equal_var=False)
 
-#   # 3.Authorities contacted by fraud reported
-#   pd.crosstab(df['authorities_contacted'], df['fraud_reported']).plot(
-#       kind='bar', 
-#       stacked=True, 
-#       ax=ax[0, 1], 
-#       color=colors  # Blue colors
-#   )
-#   ax[0, 1].set_title('Authorities Contacted by Fraud Reported', fontsize=18, fontweight='bold')
-#   ax[0, 1].spines['right'].set_visible(False)
-#   ax[0, 1].spines['top'].set_visible(False)
-#   ax[0, 1].set_xlabel('Authorities Contacted', fontsize=18, fontweight='bold')
-#   ax[0, 1].set_ylabel('Count', fontsize=18, fontweight='bold')
-#   ax[0, 1].set_xticklabels(ax[0, 1].get_xticklabels(), rotation=30, ha='right', fontsize=14)
-#   ax[0, 1].legend(fontsize=14)
+                # Kolmogorov-Smirnov-test
+                ks_stat, p_ks = ks_2samp(group0, group1)
 
-#   # 4. witness distribution for fraud reported = yes
-# #   sns.countplot(
-# #       x='witnesses', data=df[df['fraud_reported'] == 'Y'], palette='Blues', ax=ax[1, 0])
-# #   ax[1, 0].set_title('Witnesses Distribution for Fraud Reported = Yes', fontsize=18, fontweight='bold')
-# #   ax[1, 0].spines['right'].set_visible(False)
-# #   ax[1, 0].spines['top'].set_visible(False)
-# #   ax[1, 0].set_xlabel('Number of Witnesses', fontsize=18, fontweight='bold')
-# #   ax[1, 0].set_ylabel('Count', fontsize=18, fontweight='bold')
+                # Mann-Whitney-U-test
+                mw_stat, p_mw = mannwhitneyu(group0, group1, alternative='two-sided')
 
-#   # 5. Stacked bar chart incident_severity distribution to fraud reported
-#   pd.crosstab(df['incident_severity'], df['fraud_reported']).plot(
-#       kind='bar', 
-#       stacked=True, 
-#       ax=ax[0, 2], 
-#       color=accent_colors  # Green-blue colors
-#   )
-#   ax[0, 2].set_title('Incident Severity Distribution by Fraud Reported', fontsize=18, fontweight='bold')
-#   ax[0, 2].spines['right'].set_visible(False)
-#   ax[0, 2].spines['top'].set_visible(False)
-#   ax[0, 2].set_xlabel('Incident Severity', fontsize=18, fontweight='bold')
-#   ax[0, 2].set_ylabel('Count', fontsize=18, fontweight='bold')
-#   ax[0, 2].set_xticklabels(ax[0, 2].get_xticklabels(), rotation=10, ha='right', fontsize=14)
-#   ax[0, 2].legend(fontsize=14)
+            
+                results.append({
+                    'feature': col,
+                    'p_ttest': p_ttest,
+                    'p_ks_2samp': p_ks,
+                    'p_mannwhitneyu': p_mw
+                })
 
-#   # 6. fraud reported distribution
-#   ax[1, 1].pie(
-#       df["fraud_reported"].value_counts(normalize=True),
-#       labels=df['fraud_reported'].value_counts().index.astype(str),
-#       explode=[0.05] * len(df['fraud_reported'].value_counts()),
-#       autopct="%0.2f%%",
-#       colors=["#48d1cc", "#20b2aa", "#5f9ea0"],  # Turquoise shades
-#       textprops={'fontsize': 18, 'fontweight': 'bold'}  # Make pie chart text more readable
-#   )
-#   ax[1, 1].set_title('Distribution of Fraud Reported', fontsize=18, fontweight='bold')
+        results_df = pd.DataFrame(results)
 
-# #   # 7. auto_make distribution hue=fraud_reported
-# #   sns.countplot(
-# #       x='auto_make',
-# #       data=df, 
-# #       hue='fraud_reported', 
-# #       palette='Blues_r',  # Reversed blues
-# #       ax=ax[2, 0]
-# #   )
-# #   ax[2, 0].set_title('Auto Make Distribution by Fraud Reported', fontsize=18, fontweight='bold')
-# #   ax[2, 0].spines['right'].set_visible(False)
-# #   ax[2, 0].spines['top'].set_visible(False)
-# #   ax[2, 0].yaxis.set_ticks_position('left')
-# #   ax[2, 0].xaxis.set_ticks_position('bottom')
-# #   ax[2, 0].set_xticklabels(ax[2, 0].get_xticklabels(), rotation=45, ha='right', fontsize=14)
-# #   ax[2, 0].set_xlabel('Auto Make', fontsize=18, fontweight='bold')
-# #   ax[2, 0].set_ylabel('Count', fontsize=18, fontweight='bold')
-# #   ax[2, 0].legend(fontsize=14)
+        results_df = results_df.sort_values(by='p_ks_2samp')
+        
+        st.dataframe(results_df )
+    st.markdown("##### Based on the statistical tests, we decided to keep the features that are statistically relevant:")
+    st.markdown("##### incident_severity, collision_type, incident_type, incident_state, property_damage, authorities_contacted, vehicle_claim")
+    st.divider()
 
-#   # 8. incident_type distribution to fraud reported
-#   sns.countplot(
-#       x='incident_type',
-#       data=df, 
-#       hue='fraud_reported', 
-#       palette='GnBu', 
-#       ax=ax[1, 0]
-#   )
-#   ax[1, 0].set_title('Incident Type Distribution by Fraud Reported', fontsize=18, fontweight='bold')
-#   ax[1, 0].spines['right'].set_visible(False)
-#   ax[1, 0].spines['top'].set_visible(False)
-#   ax[1, 0].set_xlabel('Incident Type', fontsize=18, fontweight='bold')
-#   ax[1, 0].set_xticklabels(ax[1, 0].get_xticklabels(), rotation=45, ha='right', fontsize=14)
-#   ax[1, 0].set_ylabel('Count', fontsize=18, fontweight='bold')
-#   ax[1, 0].legend(fontsize=14)
+if page == pages[3]:
+    st.header("Conclusion") 
+    
+    col1,col2 =st.columns(2)
+    
+    with col1:
+        st.subheader("Key Results Projects")
+        st.subheader("Models")
+        st.markdown(
+            "- Top models (LDA with SMOTETomek, Ridge, AdaBoost) got weighted F1 around 0.84–0.85\n"
+            "- We use F1-score because data imbalanced\n"
+            "- Models show good balance of precision and recall"
+        )
 
-#   # 9. top hobbies distribution
-#   top_hobbies = (
-#       df[df['fraud_reported'] == 'Y']['insured_hobbies']
-#       .value_counts()
-#       .head(10)
-#       .index
-#   )
-#   filtered_df = df[df['insured_hobbies'].isin(top_hobbies)]
-#   sorted_hobbies = (
-#       filtered_df[filtered_df['fraud_reported'] == 'Y']['insured_hobbies']
-#       .value_counts()
-#       .index
-#   )
-#   filtered_df['insured_hobbies'] = pd.Categorical(
-#       filtered_df['insured_hobbies'], categories=sorted_hobbies, ordered=True
-#   )
-  
-#   sns.countplot(
-#       y='insured_hobbies',
-#       data=filtered_df,
-#       hue='fraud_reported',
-#       palette='PuBuGn',  # Purple-Blue-Green palette
-#       ax=ax[1, 2]
-#   )
-#   ax[1, 2].set_title('Top 10 Insured Hobbies Distribution by Fraud Reported', fontsize=18, fontweight='bold')
-#   ax[1, 2].spines['right'].set_visible(False)
-#   ax[1, 2].spines['top'].set_visible(False)
-#   ax[1, 2].set_xlabel('Count', fontsize=18, fontweight='bold')
-#   ax[1, 2].set_ylabel('Insured Hobbies', fontsize=18, fontweight='bold')
-#   ax[1, 2].set_xticklabels(ax[1, 2].get_xticklabels(), rotation=90, fontsize=14)
-#   ax[1, 2].legend(fontsize=14)
+        st.subheader("Top Features")
+        st.markdown(
+            "- incident_severity_major_damage\n"
+            "- insured_hobbies_chess\n"
+            "- insured_hobbies_crossfit"
+        )
 
-#   # Set overall figure style
-#   plt.rcParams['axes.prop_cycle'] = plt.cycler(color=plt.cm.Blues(np.linspace(0, 1, 10)))
-  
-#   fig.savefig('meine_figur.png',              # Dateiname
-#             format='png',                   # Dateiformat (optional, wird aber empfohlen)
-#             dpi=300,                        # Auflösung in dots per inch
-#             bbox_inches='tight',           # Ränder zuschneiden
-#             transparent=False)        
-  
-#   #Show the plot in Streamlit
-#   st.pyplot(fig)
+        st.subheader("Benchmark")
+        st.markdown(
+            "- Similar projects on Kaggle/GitHub had F1 ≈ 0.67\n"
+            "- They often used accuracy, not balancing classes\n"
+            "- Our strict feature selection & one-hot encoding gave better results "
+    )
 
-#####################################################################################################################
-#####################################################################################################################
+    with col2:
+        st.subheader("Project Work")
+        st.subheader("Main Challenges")
+        st.markdown(
+            "- Small dataset (1000 claims) limited improvement\n"
+            "- Learning curve for model tuning and preprocessing order\n"
+            "- Code merge issues in team slowed progress"
+        )
+
+        st.subheader("Contributions")
+        st.markdown(
+            "- Complete data cleaning and preprocessing\n"
+            "- Tested many classifiers plus resampling techniques\n"
+            "- Hyperparameter tuning and cross-validation"
+        )
+
+        st.subheader("Lessons Learned")
+        st.markdown(
+            "- Plan whole workflow early to avoid rework\n"
+            "- Keep test set safe for final unbiased evaluation\n"
+            "- Explore more creative feature engineering next time"
+        )
+    
+   
