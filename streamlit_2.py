@@ -4,6 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Load the insurance claims dataset (assuming you have it locally)
+df = pd.read_csv("insurance_claims.csv")  # Replace with the actual path if needed
+
 # Set page configuration with wide layout and custom theme
 st.set_page_config(layout="wide")
 
@@ -41,12 +44,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-df=pd.read_csv("insurance_claims.csv")
-X_train=pd.read_csv("/opt/anaconda3/envs/Env1/claim_predict/X_train.csv")
+# df=pd.read_csv("insurance_claims.csv")  # Moved to the top
+X_train=pd.read_csv("X_train.csv")
 
 st.title("Insurance Claim Prediction ")
 st.sidebar.title("Table of contents")
-pages=["Business problem", "Data Visualization","Statistical Methods", "Feature Engineering",  "Modelling", "Real-life Sample Application"]
+pages=["Business problem", "Data Visualization","Statistical Methods", "Feature Engineering", "Future Feature Engineering", "Modelling", "Real-life Sample Application"] # Added "Future Feature Engineering"
 st.sidebar.write("\n\nCreated by:")
 st.sidebar.write("Bertrand Tcheuffa  \n Nathalie Mugrauer  \n Quy-Manh Jurca-Tsan \n")
 st.sidebar.write("\n\n\n")
@@ -54,60 +57,83 @@ st.sidebar.write("\n\n\n")
 st.sidebar.markdown("<p style='font-size:20px; font-weight:bold; color:white;'>Go to:</p>", unsafe_allow_html=True)
 page=st.sidebar.radio("", pages, label_visibility="collapsed")  # Hide the default label
   
+if page == pages[0] : 
+  st.write("### Introduction")
+  ###########################################################################################################################################
 
+if page == pages[1] : 
+  st.write("### Data Visualization")
+  
 #####################################################################################################################
 
 ## Feature Engineering
 if page == pages[3] :
   st.write("### Feature Engineering")
-  st.write("In the previous slides we have gained a solid understanding of our data. Based on statistical methods we have reduced the dimensionality of our dataset from 40 explanatory features to 8  **(7 categorical and 1 quantitative)**." )
-  #show X_train.info()
-  st.image("df.info().png")
-  
-  st.write("\nMissing values in **'authorities_contacted'** were handled using the **SimpleImputer()** with the **strategy 'most_frequent'**.")
-  st.code("""categorical_columns = ['authorities_contacted'] 
-          categorical_imputer=SimpleImputer(strategy='most_frequent')
+  st.write("In the previous slides we have gained a solid understanding of our data. " )
+  st.dataframe(X_train.info())
+  st.write("Missing values in 'authorities_contacted' were handled using the **SimpleImputer()** with the **strategy 'most_frequent'**.")
+  st.code("""categorical_columns = ['incident_severity', 'insured_hobbies', 'collision_type', 'incident_type', 'incident_state', 'property_damage', 'authorities_contacted']
+ categorical_imputer=SimpleImputer(strategy='most_frequent')
 
  X_train[categorical_columns]=categorical_imputer.fit_transform(X_train[categorical_columns])
  X_test[categorical_columns]=categorical_imputer.transform(X_test[categorical_columns])
  """)
-
+  st.dataframe(df.head(6))
  #categorical features
-  st.write("\nConsequently, we reviewed these features and decided if and which transformations are needed. We begin with the categorical features:")
-  st.image("cat_var.png")
-  #shape of X_train
-  st.write("/nThe shape of the transformed TRAIN Set is:", X_train.shape)
-  
-  st.dataframe(X_train.head(3))
+  st.write("Consequently, we reviewed these features and decided if and which transformations are needed.")
+  st.write("We begin with the categorical features: \n- incident_severity \n - insured_hobbies \n - collision_type \n- incident_type \n- incident_state \n- property_damage \n - authorities_contacted")
+  st.write("Most machine learning models work best with numerical input well. Based on this, an  encoding approach is necessary. A internal topic of discussion was the choice of the encoder. ")
+  st.image("cat_var.png", caption="Categorical variables encoding")
+  st.write(" All categorical variables were encoded with the One-Hot Encoder.")
+
  #quantitative features
-  st.write("\nThe only quantitative feature is **'vehicle_claim'**.  We observe a wide range among the min and max values.  We decided to scale this feature using the **StandardScaler()**.")
-  
-  st.code("""
-minmax_scaler = MinMaxScaler()
-minmax_col = ['vehicle_claim']          
-for column in minmax_col:
-    X_train[column] = minmax_scaler.fit_transform(X_train[[column]])
-    X_test[column] = minmax_scaler.transform(X_test[[column]])
-  """)
-  
-  st.write("**Dataframe  before scaling:**")
-  vehicle_claim_desc = df['vehicle_claim'].describe()[['count', 'mean', 'min', 'max']]
-  vehicle_claim_desc_df = vehicle_claim_desc.to_frame().T
+  st.write("The only quantitative feature is **'vehicle_claim'**. ")
+  vehicle_claim_desc_df = X_train['vehicle_claim'].describe().to_frame().T
   st.dataframe(vehicle_claim_desc_df)
 
-  st.write("**Train set after scaling:**")
-  vehicle_claim_desc_X_train = X_train['vehicle_claim'].describe()[['count', 'mean', 'min', 'max']].to_frame().T
-  st.dataframe(vehicle_claim_desc_X_train)
+# --- 4. Future Feature Engineering ---
+if page == pages[4]: # Changed from 5 to 4
+    st.header("Future Feature Engineering")
+    st.write("Here are some potential feature engineering ideas to explore in the future to potentially improve model performance:")
 
-################################################################################################
-################################################################################################
+    st.subheader("Basic Feature Enhancements")
+    st.markdown("""
+    * **More Granular Categorical Encoding:** Explore target encoding or weight of evidence (WOE) for high-cardinality categorical features.
+    * **Date/Time Features:** Extract day of the week, time since policy inception, and time between incident and claim.
+    * **Handling of 'Unknown' or Missing Values:** Create a separate category for missing data or a binary flag indicating whether a value was provided.
+    """)
 
-# --- 4. Real-life Sample Application ---
-if page == pages[5]:
+    st.subheader("Interaction Features")
+    st.markdown("""
+    * **Severity x Claim Amount:** Create a ratio of claim amount to incident severity.
+    * **Incident Location/State Combinations:** Combine location data for more specific geographic information.
+    * **Vehicle Age/Type x Claim Amount:** Combine vehicle information with claim amount.
+    * **Hobbies x Incident Type/Severity**: Interaction between risky hobbies and incident.
+    """)
+
+    st.subheader("Domain-Specific Features")
+    st.markdown("""
+    * **Claim History Features:** Include number of prior claims and time since the last claim.
+    * **Policyholder Behavior Features:** Consider policyholder tenure and changes in coverage.
+    * **Geographic Risk Factors:** Incorporate external data about the incident location (e.g., crime rates).
+    * **Text Analysis:** Use NLP to extract features from incident descriptions (e.g., keywords, sentiment).
+    """)
+
+    st.subheader("Advanced Techniques")
+    st.markdown("""
+    * **Clustering-Based Features:** Use clustering to group similar claims and use the cluster assignment as a feature.
+    * **Anomaly Detection Scores:** Use an anomaly detection model to score claims and use the anomaly score as a feature.
+    * **Graph-Based Features:** If applicable, use graph analysis to extract features from relationships between entities.
+    """)
+
+
+
+# --- 5. Real-life Sample Application --- # Changed from 6 to 5
+if page == pages[5]: # Changed from 5 to 6
     st.markdown("<h2 style='color:red;'>Real-life Sample Application: Insurance Fraud Detection</h2>", unsafe_allow_html=True)
     st.markdown("<p style='color:red;'>This application demonstrates how the machine learning model could be used in a real-world scenario to assess the risk of fraud.</p>", unsafe_allow_html=True)
 
-    # --- 4.1.  Application Scenario: New Insurance Policy ---
+    # --- 5.1.  Application Scenario: New Insurance Policy ---
     def new_policy_survey():
         st.subheader("New Insurance Policy Application")
         st.write("Please provide the following information to process your insurance application.")
@@ -140,7 +166,7 @@ if page == pages[5]:
             # In a real app, you'd send 'answers_df' to your fraud prediction model here
 
 
-    # --- 4.2. Claim Scenario:  Filing an Insurance Claim ---
+    # --- 5.2. Claim Scenario:  Filing an Insurance Claim ---
     def file_claim_survey():
         st.subheader("File an Insurance Claim")
         st.write("Please provide details about the incident to process your claim.")
@@ -166,10 +192,10 @@ if page == pages[5]:
 
         if st.button("Submit Claim"):
             st.success("Your claim has been submitted. We will contact you with an update.")
-            #  send 'answers_df' to your fraud prediction model
+            #  send 'answers_df' to your fraud prediction model here
 
 
-    # --- 4.3.  Main App  ---
+    # --- 5.3.  Main App  ---
     def main():
         # st.title("Insurance Fraud Detection") #moved to main page
         st.sidebar.title("Choose a Scenario")
