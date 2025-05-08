@@ -63,7 +63,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Load and prepare data
-df = pd.read_csv("insurance_claims.csv")
+df = pd.read_csv("insurance_claims_geodata.csv")
 
 # Convert date columns to datetime if they exist
 try:
@@ -118,9 +118,8 @@ with st.sidebar.container():
     st.write("Quy-Manh Jurca-Than")
 
 
-#####################################################################################################################
-#####################################################################################################################
-
+####################################################################################################################################################################
+####################################################################################################################################################################
 # Main content area based on the selected page
 if page == "Business problem":
     st.header("Business Problem Introduction")
@@ -269,14 +268,14 @@ if page == "Business problem":
             st.subheader("Incident Locations")
 
             # Check if lat and lon columns exist in the dataset
-            if 'lat' in df.columns and 'lon' in df.columns:
+            if 'lat' in df.columns and 'lng' in df.columns:
                 fig_map = px.scatter_map(
                     df,
                     lat="lat",
-                    lon="lon",
+                    lon="lng",
                     color="fraud_reported",
                     hover_name="fraud_reported",
-                    hover_data={"incident_date": True, "lat": False, "lon": False},
+                    hover_data={"incident_date": True, "lat": False, "lng": False},
                     color_discrete_sequence=px.colors.qualitative.D3,
                     zoom=4,
                     height=400,
@@ -288,7 +287,7 @@ if page == "Business problem":
 
                 st.plotly_chart(fig_map, use_container_width=True)
             else:
-                st.warning("Location data (lat, lon) not found in dataset")
+                st.warning("Location data (lat, lng) not found in dataset")
     except Exception as e:
         st.error(f"Error creating plots: {e}")
     
@@ -306,7 +305,8 @@ if page == "Business problem":
     st.markdown("### 🧠🔁📉Build accurate different machine learning models that spots fraudulent insurance claims.")  
     st.markdown("### 🚨🕵️‍♂️🚨Ensure model stability and reliability by achieving consistently prediction scores across different subsets and unseen data.")  
     st.markdown("### ⚡🕵️‍♀️📈Apply the full data science workflow - from understanding and preprocessing to feature engineering and model evaluation.") 
-
+####################################################################################################################################################################
+####################################################################################################################################################################
 elif page == "Data Visualization":
     st.header("Data Visualization")
     st.markdown("### In this section, we will visualize the data to better understand the relationships between features and the target variable.")
@@ -375,7 +375,8 @@ elif page == "Data Visualization":
             st.markdown("#### - Two distinct clusters of high correlation are clearly visible.") 
             st.markdown("#### - We observe strong correlations between different types of claims—particularly between `vehicle_claim` and `total_claim_amount`.") 
             st.markdown("#### - The second cluster, located in the opposite corner of the heatmap, reveals a similarly strong correlation between `months_as_customer` and `age`.")
-
+####################################################################################################################################################################
+####################################################################################################################################################################
 elif page == "Statistical Methods":
     st.header("Data Exploration:")
     st.markdown("##### Before proceeding with statistical analyses, we should establish a strategy for handling missing (NaN) values. \
@@ -504,11 +505,16 @@ elif page == "Statistical Methods":
     st.markdown("##### Based on the statistical tests, we decided to keep the features that are statistically relevant:")
     st.markdown("##### incident_severity, collision_type, incident_type, incident_state, property_damage, authorities_contacted, vehicle_claim")
     st.divider()
-
+####################################################################################################################################################################
+####################################################################################################################################################################
 elif page == "Feature Engineering":
     st.header("Feature Engineering")
     st.write("In the previous slides we have gained a solid understanding of our data. Based on statistical methods we have reduced the dimensionality of our dataset from 40 explanatory features to 8  **(7 categorical and 1 quantitative)**.")
-    st.image("df.info().png")
+    try:
+        st.image("df_info.png")
+    except FileNotFoundError:
+        st.warning("Image file 'df_info.png' not found")
+        
     # Create the data for the table
     data = {
         "Feature": ["incident_severity", "insured_hobbies", "collision_type", "incident_type", "incident_state", "property_damage", "authorities_contacted"],
@@ -541,9 +547,142 @@ elif page == "Feature Engineering":
             st.dataframe(vehicle_claim_desc_X_train)
     except KeyError:
         st.warning("Warning: 'vehicle_claim' column not found in X_train.")
+#####################################################################################
+#####################################################################################
 elif page == "Modelling":
     st.header("Modelling")
-    st.write("Content for the Modelling page...")
+    st.divider()
+    st.markdown("### In this section, we will present the different steps we achieved to identify the best suitable ML models for the fraud prediction task.")
+    st.markdown("### We begin by outlining the preliminary steps, proceed to detail the strategy employed for model selection, and conclude with a concise summary of the modelling process.")
+    st.divider()
+    st.header("Preliminary steps:")
+    
+    with st.expander("Show Preliminary steps"):
+        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["✂️ Cardinality Reduction","🎯 Target Variable Encoding", "➗ Data Set Train/Test Splitting", " ⚖️ Feature Normalisation/Encoding", " ❓ Missing Value Handling", "📏 Evaluation Metric Definition"])
+        
+        with tab1:
+            st.markdown("### The statistical tests conducted identified the following features, presented in the table below, as having the strongest influence on the target variable: ")
+            df_model = df[['insured_hobbies', 'incident_type', 'collision_type',
+                'incident_severity', 'authorities_contacted', 'incident_state',
+                'property_damage', 'vehicle_claim'
+            ]]
+        
+            st.dataframe(df_model.head())
+
+        with tab2:
+            st.markdown("### ➡️ Label Encoding was used to mark the fraud cases as '1' and the non-fraud cases as '0'" )   
+            st.markdown("### ➡️ Feature encoding transforms raw data into numerical values suitable for input to most machine learning algorithms")
+            
+        with tab3:
+            col_img3, col_text3 = st.columns([2, 1])  
+            with col_img3:
+                labels = ['Train', 'Test']
+                sizes = [80, 20]
+                colors = ['#66b3ff', '#ff9999']
+
+                def plot_pie():
+                    fig, ax = plt.subplots(figsize=(1.5, 1.5))  # Smaller plot size
+                    wedges, texts, autotexts = ax.pie(sizes,
+                    labels=labels,
+                    autopct='%1.1f%%',
+                    colors=colors,
+                    startangle=90,
+                    textprops={'fontsize': 4})
+                    ax.axis('equal')
+                    st.pyplot(fig)
+
+                plot_pie()
+
+            with col_text3:
+                st.markdown("### ➡️ The train / test split was performed before the feature encoding and normalization ")
+                st.markdown("### ➡️ It helps avoiding data leakage during the the transformation ")
+                st.markdown("### ➡️ Missing value handling, feature normalization and encoding were done on each set separately ")
+
+        with tab4:
+            st.header("Categorical features encoding with the OneHotEncoder")
+            col_table4, col_text4 = st.columns([2, 1])  
+            with col_table4:
+                try:
+                    st.image("Categorical_variables.png")
+                except FileNotFoundError:
+                    st.warning("Image file 'Categorical_variables.png' not found")
+            with col_text4:
+                st.markdown("### ➡️ Handling 'incident_severity' as ordinal variable worsen the f1-score. ")
+                st.markdown("### ➡️ 'incident_severity' and all other categorical features were handled as nominal variables and therefore encoded with the OneHotEncoder  ")
+        
+            st.header("Numerical features normalization with the MinMaxScaler")
+            col_table5, col_text5 = st.columns([2, 1])  
+            with col_table5:
+                try:
+                    st.image("Numerical_variable.png")
+                except FileNotFoundError:
+                    st.warning("Image file 'Numerical_variable.png' not found")
+            with col_text5:
+                st.markdown("### ➡️ 'vehicule_claim' was normalized with the MinMaxScaler, due to it's non-normal distribution ")
+                st.markdown("### ➡️ 'vehicule_claim was the most relevant numerical feature selected for the task  ")
+    
+        with tab5:
+            st.markdown("### ➡️ 9.1 % of the values in 'authorities_contacted' were identified as missing values ")
+            st.markdown("### ➡️ They were replaced with the mode, using the SimpleImputer  ")
+    
+        with tab6:
+            st.markdown("### ➡️ Fraud cases that are misclassified can cause a big financial damage by claim settlement.")
+            st.markdown("### ➡️ It is therefore important to minimize the false negative rate ")
+            st.markdown("### ➡️ Non-fraud cases, that are classified as fraud (False Positive) are also to be minimized ")
+            st.markdown("### ➡️ Wrongly assigned penalties due to a misprediction may result in costly lawsuits against the company ")
+            st.markdown("### ➡️ The f1-score, with a good balance between precision and recall, was chosen as the metric  for the task \n")
+            st.markdown(" \n")
+            col1, col2, col3 = st.columns([1, 2, 1])  # 2 is wider, acts as center
+            with col2:
+                try:
+                    st.image("F1_score_definition.png", use_container_width=True)
+                except FileNotFoundError:
+                    st.warning("Image file 'F1_score_definition.png' not found")
+
+    st.divider()
+    st.header("Our strategy:")
+    with st.expander("Show our strategy"):
+        st.markdown("### 1️⃣ Modelisation with imbalanced data")
+        st.markdown("### 2️⃣ Resampling strategy selection (RandomOverSampler/SMOTETomek)")
+        st.markdown("### 3️⃣ Modelisation with resampled data")
+        st.markdown("### 4️⃣ Hyperparameter optimization (GridSearch/ensemble methods) ")
+        st.markdown("### 5️⃣ Model robustness testing (Stratified 50-Fold cross validation)")
+        #st.markdown("### 6️⃣ Best models selection ")
+    
+    st.divider()
+    st.header("Our results:")
+    with st.expander("Show our results"):
+        st.markdown("### 🏆 The best scorer models")
+        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1️⃣ - Linear Discriminant Analysis (LDA)")
+        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2️⃣ - Logistic Regression")
+        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3️⃣ - AdaBoost")
+        st.markdown("### 🔝 The LDA most influent features")
+        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1️⃣ - 'insured_hobbies_chess' ")
+        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2️⃣ - 'insured_hobbies_cross_fit'")
+        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3️⃣ - 'incident_severity_Major_Damage'")
+
+        tab7, tab8 = st.tabs(["🏆 The Best Scorer Models ","🔝 The LDA Most Influent Features"])
+        
+        with tab7:
+            col_img7, col_text7 = st.columns([2, 1])
+            with col_img7:
+                try:
+                    st.image("Best_scorer_models.png")
+                except FileNotFoundError:
+                    st.warning("Image file 'Best_scorer_models.png' not found")
+            with col_text7:
+                st.markdown("### - The Linear Discriminant Analysis model, when combined with SMOTETomek resampling, achieved one of the highest performance scores ")           
+                st.markdown("### - The variation in weighted f1-score across models remained minimal ")
+                st.markdown("### - Analysis of the confusion matrices enabled a better differentiation among model performances.")
+        with tab8:
+            st.header("Hypotheses:")
+            st.markdown("### - People committing fraud may misreport hobbies (Chess or cross fit) to appear more trustworthy")           
+            st.markdown("### - The LDA model may be picking up spurious correlations due to small sample size (1000 samples) ")
+            st.markdown("### - Fraudulent profiles might exhibit non-representative hobby distributions compared to genuine profiles")
+    st.divider()
+
+#####################################################################################
+#####################################################################################
 elif page == "Sample Application":
     st.header("Sample Application")
     st.subheader("Real-life Sample Application: Insurance Fraud Detection")
@@ -711,6 +850,8 @@ elif page == "Sample Application":
     
     # Call the file_claim_survey function
     file_claim_survey()
+############################################################################################
+###########################################################################################
 
 elif page == "Conclusion":
     st.header("Conclusion")
