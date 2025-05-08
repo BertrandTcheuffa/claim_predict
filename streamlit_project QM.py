@@ -499,9 +499,9 @@ if page == pages[4] :
             st.dataframe(df.head())
 
         with tab2:
-            st.markdown("### ➡️ Feature encoding transforms raw data into numerical values suitable for input to most machine learning algorithms")
             st.markdown("### ➡️ Label Encoding was used to mark the fraud cases as '1' and the non-fraud cases as '0'" )   
-
+            st.markdown("### ➡️ Feature encoding transforms raw data into numerical values suitable for input to most machine learning algorithms")
+            
         with tab3:
             col_img3, col_text3 = st.columns([2, 1])  
             with col_img3:
@@ -531,7 +531,7 @@ if page == pages[4] :
             st.header("Categorical features encoding with the OneHotEncoder")
             col_table4, col_text4 = st.columns([2, 1])  
             with col_table4:
-                st.image("Categorical variables.png")
+                st.image("Categorical_variables.png")
             with col_text4:
                 st.markdown("### ➡️ Handling 'incident_severity' as ordinal variable worsen the f1-score. ")
                 st.markdown("### ➡️ 'incident_severity' and all other categorical features were handled as nominal variables and therefore encoded with the OneHotEncoder  ")
@@ -539,7 +539,7 @@ if page == pages[4] :
             st.header("Numerical features normalization with the MinMaxScaler")
             col_table5, col_text5 = st.columns([2, 1])  
             with col_table5:
-                st.image("Numerical variable.png")
+                st.image("Numerical_variable.png")
             with col_text5:
                 st.markdown("### ➡️ 'vehicule_claim' was normalized with the MinMaxScaler, due to it's non-normal distribution ")
                 st.markdown("### ➡️ 'vehicule_claim was the most relevant numerical feature selected for the task  ")
@@ -557,7 +557,7 @@ if page == pages[4] :
             st.markdown(" \n")
             col1, col2, col3 = st.columns([1, 2, 1])  # 2 is wider, acts as center
             with col2:
-                st.image("F1-score definition.png", use_container_width=True)
+                st.image("F1_score_definition.png", use_container_width=True)
 
     st.divider()
     st.header("Our strategy:")
@@ -586,7 +586,7 @@ if page == pages[4] :
         with tab7:
             col_img7, col_text7 = st.columns([2, 1])
             with col_img7:
-                st.image("Best scorer models.png")
+                st.image("Best_scorer_models.png")
             with col_text7:
                 st.markdown("### - The Linear Discriminant Analysis model, when combined with SMOTETomek resampling, achieved one of the highest performance scores ")           
                 st.markdown("### - The variation in weighted f1-score across models remained minimal ")
