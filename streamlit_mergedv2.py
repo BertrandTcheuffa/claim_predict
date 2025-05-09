@@ -118,7 +118,7 @@ with st.sidebar.container():
     st.write("Created by:")
     st.write("Bertrand Tcheuffa")
     st.write("Nathalie Mugrauer")
-    st.write("Quy-Manh Jurca-Than")
+    st.write("Quy-Manh Jurca-Tsan")
 
 
 ####################################################################################################################################################################
