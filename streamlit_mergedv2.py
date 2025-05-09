@@ -387,7 +387,7 @@ elif page == "Statistical Methods":
                 This character may either be treated as a missing value and replaced accordingly, or considered as a separate category.\
                 In addition, it is important to examine whether the occurrence of `?` shows any systematic relationship with fraudulent activity.")
     
-    tab1, tab2, tab3 = st.tabs(["NaN - authorities_contacted", "❔ - police_report_available, property_damage", "❔ - collision_type"])
+    tab1, tab2, tab3 = st.tabs(["NaN - authorities_contacted", "`?` - police_report_available, property_damage", "`?` - collision_type"])
     
     with tab1:
         st.subheader("NaN - authorities_contacted")
@@ -407,7 +407,7 @@ elif page == "Statistical Methods":
             st.markdown("#### - Since `Police` is also the most frequently occurring category, we decided to use it as a replacement value during encoding.")
             
     with tab2:
-        st.subheader("❔ - police_report_available, property_damage")
+        st.subheader("`?` - police_report_available, property_damage")
         col_img2, col_text2 = st.columns([2, 1])  
         with col_img2:
             try:
@@ -423,7 +423,7 @@ elif page == "Statistical Methods":
             
         
     with tab3:
-        st.subheader("❔ - collision_type")
+        st.subheader("`?` - collision_type")
         col_img3, col_text3 = st.columns([2, 1])  
         with col_img3:
             try:
@@ -508,61 +508,80 @@ elif page == "Statistical Methods":
     st.markdown("##### Based on the statistical tests, we decided to keep the features that are statistically relevant:")
     st.markdown("##### `incident_severity`, `collision_type`, `incident_type`, `incident_state`, `property_damage`, `authorities_contacted`, `vehicle_claim`")
     st.divider()
+
+
+
 ####################################################################################################################################################################
 ####################################################################################################################################################################
+
+
 elif page == "Feature Engineering":
     st.header("Feature Engineering")
-    st.write("In the previous slides we have gained a solid understanding of our data. Based on statistical methods we have reduced the dimensionality of our dataset from 40 explanatory features to 8  **(7 categorical and 1 quantitative)**.")
+    st.write("In the previous slides we have gained a solid understanding of our data. Based on statistical methods we have reduced the dimensionality of our dataset from 40 explanatory features to 8 **(7 categorical and 1 quantitative)**.")
     try:
         st.image("df_info.png")
     except FileNotFoundError:
         st.warning("Image file 'df_info.png' not found")
+    
+    # Create expanders for different feature types
+    with st.expander("📊 Categorical Features"):
+        st.subheader("Categorical Features")
+        st.markdown("<p style='font-size:18px;'>Consequently, we reviewed these features and decided if and which transformations are needed.</p>", unsafe_allow_html=True)
         
-    # Create the data for the table
-    data = {
-        "Feature": ["incident_severity", "insured_hobbies", "collision_type", "incident_type", "incident_state", "property_damage", "authorities_contacted"],
-        "Nominal / Ordinal": ["nominal / ordinal", "nominal", "nominal / ordinal", "nominal / ordinal", "nominal", "nominal", "nominal"],
-        "Encoder": ["OneHotEncoder / OrdinalEncoder", "OneHotEncoder", "OneHotEncoder / OrdinalEncoder", "OneHotEncoder / OrdinalEncoder", "OneHotEncoder", "OneHotEncoder / Ordinal Encoder", "OneHotEncoder"]
-    }
-    st.subheader("Categorical Features")
-    st.write("Consequently, we reviewed these features and decided if and which transformations are needed. We begin with the **categorical features:**")
-    df2 = pd.DataFrame(data)
-    st.dataframe(df2)
+        # Create the data for the table
+        data = {
+            "Feature": ["incident_severity", "insured_hobbies", "collision_type", "incident_type", "incident_state", "property_damage", "authorities_contacted"],
+            "Nominal / Ordinal": ["nominal / ordinal", "nominal", "nominal / ordinal", "nominal / ordinal", "nominal", "nominal", "nominal"],
+            "Encoder": ["OneHotEncoder / OrdinalEncoder", "OneHotEncoder", "OneHotEncoder / OrdinalEncoder", "OneHotEncoder / OrdinalEncoder", "OneHotEncoder", "OneHotEncoder / Ordinal Encoder", "OneHotEncoder"]
+        }
+        df2 = pd.DataFrame(data)
+        st.dataframe(df2)
+        
+        # Load the X_train.csv file here
+        try:
+            X_train = pd.read_csv("X_train.csv")
+            st.markdown("<p style='font-size:18px;'>The shape of the transformed TRAIN Set is: {}</p>".format(X_train.shape), unsafe_allow_html=True)
+            st.dataframe(X_train.head(3))
+        except FileNotFoundError:
+            st.error("Error: X_train.csv not found. Please ensure it is in the same directory as your script.")
+    
+    with st.expander("📈 Quantitative Features"):
+        st.subheader("Quantitative Features")
+        st.markdown("<p style='font-size:18px;'>The only quantitative feature is <b>'vehicle_claim'</b>. We observe a wide range among the min and max values. We decided to scale this feature using the <b>StandardScaler()</b>.</p>", unsafe_allow_html=True)
+        
+        st.markdown("<p style='font-size:18px;'><b>Dataframe before scaling:</b></p>", unsafe_allow_html=True)
+        vehicle_claim_desc = df['vehicle_claim'].describe()[['count', 'mean', 'min', 'max']]
+        vehicle_claim_desc_df = vehicle_claim_desc.to_frame().T
+        st.dataframe(vehicle_claim_desc_df)
+        
+        st.markdown("<p style='font-size:18px;'><b>Train set after scaling:</b></p>", unsafe_allow_html=True)
+        try:
+            if 'X_train' in locals(): # Check if X_train was loaded successfully
+                vehicle_claim_desc_X_train = X_train['vehicle_claim'].describe()[['count', 'mean', 'min', 'max']].to_frame().T
+                st.dataframe(vehicle_claim_desc_X_train)
+        except KeyError:
+            st.warning("Warning: 'vehicle_claim' column not found in X_train.")
+    
+    # Add bottom padding/spacing
+    st.markdown("<div style='margin-bottom:60px'></div>", unsafe_allow_html=True)
+    st.divider()
+    st.markdown("<div style='margin-bottom:40px'></div>", unsafe_allow_html=True)
 
-    # Load the X_train.csv file here
-    try:
-        X_train = pd.read_csv("X_train.csv")
-        st.write("The shape of the transformed TRAIN Set is:", X_train.shape)
-        st.dataframe(X_train.head(3))
-    except FileNotFoundError:
-        st.error("Error: X_train.csv not found. Please ensure it is in the same directory as your script.")
 
-    st.subheader("Quantitative Features")
-    st.write("The only quantitative feature is **'vehicle_claim'**.  We observe a wide range among the min and max values.  We decided to scale this feature using the **StandardScaler()**.")
-    st.write("**Dataframe before scaling:**")
-    vehicle_claim_desc = df['vehicle_claim'].describe()[['count', 'mean', 'min', 'max']]
-    vehicle_claim_desc_df = vehicle_claim_desc.to_frame().T
-    st.dataframe(vehicle_claim_desc_df)
-    st.write("**Train set after scaling:**")
-    try:
-        if 'X_train' in locals(): # Check if X_train was loaded successfully
-            vehicle_claim_desc_X_train = X_train['vehicle_claim'].describe()[['count', 'mean', 'min', 'max']].to_frame().T
-            st.dataframe(vehicle_claim_desc_X_train)
-    except KeyError:
-        st.warning("Warning: 'vehicle_claim' column not found in X_train.")
+
 #####################################################################################
 #####################################################################################
 elif page == "Modelling":
     st.header("Modelling")
     st.divider()
     st.markdown("### In this section, we will present the different steps we achieved to identify the best suitable ML models for the fraud prediction task.")
-    st.markdown("### We begin by outlining the preliminary steps, proceed to detail the strategy employed for model selection, and conclude with a concise summary of the modelling process.")
+    st.markdown("### The workflow was initiated with a description of the preparatory steps, followed by the model selection methodology. The modeling pipeline is then summarized, culminating in the deployment of a simulation interface for model evaluation")
     st.divider()
-    st.header("Preliminary steps:")
+    st.header("👣 Preliminary steps:")
     
-    with st.expander("Show Preliminary steps"):
+    with st.expander("Show"):
         tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["✂️ Cardinality Reduction","🎯 Target Variable Encoding", "➗ Data Set Train/Test Splitting", " ⚖️ Feature Normalisation/Encoding", " ❓ Missing Value Handling", "📏 Evaluation Metric Definition"])
-        
+    
         with tab1:
             st.markdown("### The statistical tests conducted identified the following features, presented in the table below, as having the strongest influence on the target variable: ")
             df_model = df[['insured_hobbies', 'incident_type', 'collision_type',
@@ -622,7 +641,7 @@ elif page == "Modelling":
                     st.warning("Image file 'Numerical_variable.png' not found")
             with col_text5:
                 st.markdown("### ➡️ 'vehicule_claim' was normalized with the MinMaxScaler, due to it's non-normal distribution ")
-                st.markdown("### ➡️ 'vehicule_claim was the most relevant numerical feature selected for the task  ")
+                st.markdown("### ➡️ 'vehicule_claim' was the most relevant numerical feature selected for the task  ")
     
         with tab5:
             st.markdown("### ➡️ 9.1 % of the values in 'authorities_contacted' were identified as missing values ")
@@ -643,22 +662,21 @@ elif page == "Modelling":
                     st.warning("Image file 'F1_score_definition.png' not found")
 
     st.divider()
-    st.header("Our strategy:")
-    with st.expander("Show our strategy"):
+    st.header("🧠 Our strategy:")
+    with st.expander("Show"):
         st.markdown("### 1️⃣ Modelisation with imbalanced data")
         st.markdown("### 2️⃣ Resampling strategy selection (RandomOverSampler/SMOTETomek)")
         st.markdown("### 3️⃣ Modelisation with resampled data")
         st.markdown("### 4️⃣ Hyperparameter optimization (GridSearch/ensemble methods) ")
         st.markdown("### 5️⃣ Model robustness testing (Stratified 50-Fold cross validation)")
-        #st.markdown("### 6️⃣ Best models selection ")
     
     st.divider()
-    st.header("Our results:")
-    with st.expander("Show our results"):
+    st.header("🚀 Our results:")
+    with st.expander("Show"):
         st.markdown("### 🏆 The best scorer models")
         st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1️⃣ - Linear Discriminant Analysis (LDA)")
-        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2️⃣ - Logistic Regression")
-        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3️⃣ - AdaBoost")
+        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2️⃣ - Ridge Classifier")
+        st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3️⃣ - Logistic Regression")
         st.markdown("### 🔝 The LDA most influent features")
         st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1️⃣ - 'insured_hobbies_chess' ")
         st.markdown("### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2️⃣ - 'insured_hobbies_cross_fit'")
@@ -678,8 +696,7 @@ elif page == "Modelling":
                 st.markdown("### - The variation in weighted f1-score across models remained minimal ")
                 st.markdown("### - Analysis of the confusion matrices enabled a better differentiation among model performances.")
         with tab8:
-            st.header("Hypotheses:")
-            st.markdown("### - People committing fraud may misreport hobbies (Chess or cross fit) to appear more trustworthy")           
+            st.header("Hypotheses:")          
             st.markdown("### - The LDA model may be picking up spurious correlations due to small sample size (1000 samples) ")
             st.markdown("### - Fraudulent profiles might exhibit non-representative hobby distributions compared to genuine profiles")
     st.divider()
@@ -688,21 +705,15 @@ elif page == "Modelling":
         # Configure logging
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-        # Set Streamlit page configuration
-        #st.set_page_config(page_title="Model Evaluation App", layout="centered")
-
-        #st.title("🔍 Fraud Detection Model Evaluator")
-
-        # Sidebar
         st.header("Model Selection")
         model_name = st.selectbox("Choose a model:", ("Linear Discriminant Analysis", "Logistic Regression", "Ridge Classifier"))
 
         # Map selection to filenames
         model_map = {
-                        "Linear Discriminant Analysis": "lda_model.pkl",
-                        "Logistic Regression": "logReg_model.pkl",
-                        "Ridge Classifier": "RidgeCl_model.pkl"
-                    }
+                    "Linear Discriminant Analysis": "lda_model.pkl",
+                    "Logistic Regression": "logReg_model.pkl",
+                    "Ridge Classifier": "RidgeCl_model.pkl"
+                }
 
         # Prediction Button
         if st.button("🔎 Predict"):
@@ -743,12 +754,11 @@ elif page == "Modelling":
 
 
 
-
 #####################################################################################################################################################
 #####################################################################################################################################################
 elif page == "Sample Application":
     st.header("Sample Application")
-    st.subheader("Real-life Sample Application: Insurance Fraud Detection")
+    st.subheader("Based on our Linear Discriminant Analysis (LDA) model")
     st.markdown("<p style='color:#0077b6; font-size:18px;'>This application demonstrates how the machine learning model could be used in a real-world scenario to assess the risk of fraud.</p>", unsafe_allow_html=True)
 
     def file_claim_survey():
