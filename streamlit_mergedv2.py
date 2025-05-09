@@ -4,10 +4,13 @@ import joblib
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
+import logging
 from PIL import Image
 import plotly.express as px
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.impute import SimpleImputer
+from sklearn.metrics import confusion_matrix, f1_score
 from scipy.stats import chi2_contingency, ttest_ind, ks_2samp, mannwhitneyu
 
 # Load the trained model and preprocessors
@@ -680,9 +683,69 @@ elif page == "Modelling":
             st.markdown("### - The LDA model may be picking up spurious correlations due to small sample size (1000 samples) ")
             st.markdown("### - Fraudulent profiles might exhibit non-representative hobby distributions compared to genuine profiles")
     st.divider()
+    st.header("🔍 Our Model Evaluator:")
+    with st.expander("Show"):
+        # Configure logging
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-#####################################################################################
-#####################################################################################
+        # Set Streamlit page configuration
+        #st.set_page_config(page_title="Model Evaluation App", layout="centered")
+
+        #st.title("🔍 Fraud Detection Model Evaluator")
+
+        # Sidebar
+        st.header("Model Selection")
+        model_name = st.selectbox("Choose a model:", ("Linear Discriminant Analysis", "Logistic Regression", "Ridge Classifier"))
+
+        # Map selection to filenames
+        model_map = {
+                        "Linear Discriminant Analysis": "lda_model.pkl",
+                        "Logistic Regression": "logReg_model.pkl",
+                        "Ridge Classifier": "RidgeCl_model.pkl"
+                    }
+
+        # Prediction Button
+        if st.button("🔎 Predict"):
+            with st.spinner("Loading model and making predictions..."):
+                try:
+                    # Load model
+                    model_path = os.path.join("models", model_map[model_name])
+                    model = joblib.load(model_path)
+                    logging.info(f"{model_name} loaded successfully.")
+
+                    # Load test data
+                    X_test = pd.read_csv("X_test.csv")
+                    y_test = pd.read_csv("y_test.csv").squeeze()
+
+                    # Predict
+                    y_pred = model.predict(X_test)
+
+                    # Compute F1 score
+                    score = f1_score(y_test, y_pred, average="weighted")
+                    st.success(f"✅ Weighted F1-score: **{score:.4f}**")
+
+                    # Confusion matrix
+                    cm = confusion_matrix(y_test, y_pred)
+                    st.markdown("### 📊 Confusion Matrix")
+                    fig, ax = plt.subplots(figsize=(4, 3))
+                    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False, ax=ax)
+                    ax.set_xlabel("Predicted")
+                    ax.set_ylabel("Actual")
+                    ax.set_title(f"Confusion Matrix - {model_name}")
+                    st.pyplot(fig)
+
+                except FileNotFoundError as e:
+                    st.error(f"❌ File not found: {e}")
+                except Exception as e:
+                    st.error(f"❌ An error occurred: {e}")
+
+
+
+
+
+
+#####################################################################################################################################################
+#####################################################################################################################################################
 elif page == "Sample Application":
     st.header("Sample Application")
     st.subheader("Real-life Sample Application: Insurance Fraud Detection")
