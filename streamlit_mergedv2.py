@@ -547,7 +547,7 @@ elif page == "Feature Engineering":
     
     with st.expander("📈 Quantitative Features"):
         st.subheader("Quantitative Features")
-        st.markdown("<p style='font-size:18px;'>The only quantitative feature is <b>'vehicle_claim'</b>. We observe a wide range among the min and max values. We decided to scale this feature using the <b>StandardScaler()</b>.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size:18px;'>The only quantitative feature is <b>'vehicle_claim'</b>. We observe a wide range among the min and max values. We decided to scale this feature using the <b>MinMaxScaler()</b>.</p>", unsafe_allow_html=True)
         
         st.markdown("<p style='font-size:18px;'><b>Dataframe before scaling:</b></p>", unsafe_allow_html=True)
         vehicle_claim_desc = df['vehicle_claim'].describe()[['count', 'mean', 'min', 'max']]
