@@ -328,10 +328,10 @@ elif page == "Data Visualization":
             st.header("Observation")
         
             st.markdown("#### - We observe a distribution of gender that is fairly balanced.")
-            st.markdown("#### - The 'authorities_contacted' feature shows that most claims are reported to the police.") 
-            st.markdown("#### - While the 'incident_severity' feature indicates that most incidents are minor.") 
-            st.markdown("#### - We observe our target variable, 'fraud_reported', is imbalanced, with a higher number of non-fraudulent claims.")
-            st.markdown("#### - For the hobbies distribution we observe that the hobbies chess and crossfit are the most common among fraudulent claims.")
+            st.markdown("#### - The `authorities_contacted` feature shows that most claims are reported to the police.") 
+            st.markdown("#### - While the `incident_severity` feature indicates that most incidents are minor.") 
+            st.markdown("#### - We observe our target variable, `fraud_reported`, is imbalanced, with a higher number of non-fraudulent claims.")
+            st.markdown("#### - For the hobbies distribution we observe that the `hobbies chess` and `crossfit` are the most common among fraudulent claims.")
         
     with tab2:
         col_img2, col_text2 = st.columns([2, 1])  
