@@ -301,7 +301,7 @@ if page == "Business problem":
     st.divider()
     st.header("Objective")
     st.divider()
-    st.markdown("### ➡️Our target variable, 'fraud_reported', indicates if a claim is fraudulent or not.")
+    st.markdown("### ➡️Our target variable, `fraud_reported`, indicates if a claim is fraudulent or not.")
     st.markdown("### ➡️Type of Machine Learning Problem: Supervised learning." )
     st.markdown("### ➡️Binary Classification Problem ")
     st.divider()
@@ -419,7 +419,7 @@ elif page == "Statistical Methods":
             
             st.markdown("#### - In `police_report_available` and `property_damage`, these ambiguous values may indicate potential fraud, as the information could have been intentionally withheld.")
             st.markdown("#### - To avoid any misleading interpretations or data leakage, these entries were not imputed with common values from the distribution.") 
-            st.markdown("#### - But instead were explicitly replaced with a new category called 'Unknown'.") 
+            st.markdown("#### - But instead were explicitly replaced with a new category called `Unknown`.") 
             
         
     with tab3:
@@ -506,7 +506,7 @@ elif page == "Statistical Methods":
             st.error(f"Error calculating statistical tests: {e}")
             
     st.markdown("##### Based on the statistical tests, we decided to keep the features that are statistically relevant:")
-    st.markdown("##### incident_severity, collision_type, incident_type, incident_state, property_damage, authorities_contacted, vehicle_claim")
+    st.markdown("##### `incident_severity`, `collision_type`, `incident_type`, `incident_state`, `property_damage`, `authorities_contacted`, `vehicle_claim`")
     st.divider()
 ####################################################################################################################################################################
 ####################################################################################################################################################################
