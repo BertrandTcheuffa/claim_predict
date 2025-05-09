@@ -548,7 +548,7 @@ if page == pages[4] :
                 st.image("Numerical_variable.png")
             with col_text5:
                 st.markdown("### ➡️ 'vehicule_claim' was normalized with the MinMaxScaler, due to it's non-normal distribution ")
-                st.markdown("### ➡️ 'vehicule_claim was the most relevant numerical feature selected for the task  ")
+                st.markdown("### ➡️ 'vehicule_claim' was the most relevant numerical feature selected for the task  ")
     
         with tab5:
             st.markdown("### ➡️ 9.1 % of the values in 'authorities_contacted' were identified as missing values ")
@@ -597,8 +597,7 @@ if page == pages[4] :
                 st.markdown("### - The variation in weighted f1-score across models remained minimal ")
                 st.markdown("### - Analysis of the confusion matrices enabled a better differentiation among model performances.")
         with tab8:
-                st.header("Hypotheses:")
-                st.markdown("### - People committing fraud may misreport hobbies (Chess or cross fit) to appear more trustworthy")           
+                st.header("Hypotheses:")          
                 st.markdown("### - The LDA model may be picking up spurious correlations due to small sample size (1000 samples) ")
                 st.markdown("### - Fraudulent profiles might exhibit non-representative hobby distributions compared to genuine profiles")
     st.divider()
@@ -607,12 +606,6 @@ if page == pages[4] :
         # Configure logging
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-        # Set Streamlit page configuration
-        #st.set_page_config(page_title="Model Evaluation App", layout="centered")
-
-        #st.title("🔍 Fraud Detection Model Evaluator")
-
-        # Sidebar
         st.header("Model Selection")
         model_name = st.selectbox("Choose a model:", ("Linear Discriminant Analysis", "Logistic Regression", "Ridge Classifier"))
 
