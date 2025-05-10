@@ -272,7 +272,7 @@ if page == "Business problem":
 
             # Check if lat and lon columns exist in the dataset
             if 'lat' in df.columns and 'lng' in df.columns:
-                fig_map = px.scatter_map(
+                fig_map = px.scatter_mapbox(
                     df,
                     lat="lat",
                     lon="lng",
