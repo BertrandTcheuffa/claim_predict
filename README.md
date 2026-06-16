@@ -1,4 +1,4 @@
-# Insurance Claim Prediction Machine Learning Project
+# Insurance Claims Fraud Detection Project
 
 ## Objectives
 The primary aim of this project is to develop a data-driven approach for detecting potentially fraudulent insurance claims. 
